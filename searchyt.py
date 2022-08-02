@@ -1,19 +1,27 @@
-import requests
-from bs4 import BeautifulSoup 
-import json
 
-search=input("Search Something:")
+import urllib.request
+import re
+import time
+from pytube import YouTube
+import os
 
-page = requests.get("https://www.youtube.com/results?search_query={}".format(search.replace(' ','+')))
+class Downloader:
+    def downloadvideo(search):
+			
+        page = urllib.request.urlopen("https://www.youtube.com/results?search_query={}".format(search.replace(' ','+')))
+        videoids=  re.findall(r"watch\?v=(\S{11})",page.read().decode())
+        theurl = "https://youtube.com/watch?v="+videoids[0]
 
-content = str(page.content).split('ytInitialData = ')[1].split('</script')[0]
-try:
-	thejson = json.dumps(content)
-	print("SUCCESSFULLY LOADED")
-	open("out.json","w").write(thejson)
-except Exception as e:
-	print(content)
-	print(e)
-	
+        yt = YouTube(theurl)
+        print("DOWNLOADING | {}".format(yt.title))
+        
+        video = yt.streams.filter(only_audio=True).first()
+        
+        
+        out_file = video.download(output_path="./static")
+        base, ext = os.path.splitext(out_file)
+        new_file = base + '.mp3'
+        os.rename(out_file, new_file)
+        print("COMPLETE | {}".format(yt.title))
 
 
