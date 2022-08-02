@@ -6,6 +6,9 @@ from pytube import YouTube
 import os
 from colorama import Fore, Back, Style
 
+def compress(basename):
+        os.system(f"ffmpeg -y -i '{basename}.mp4' -vcodec libx265 -crf 28 '{basename}_C.mp4'")
+
 class Downloader:
     def downloadvideo(search):
         search = search.lower().replace("ü","u").replace("$","s").replace("ö","").replace("ş","s").replace("ö","o").replace("İ","I").replace("ı","i")
@@ -21,8 +24,9 @@ class Downloader:
         
         out_file = video.download(output_path="./static")
         base, ext = os.path.splitext(out_file)
-        new_file = base + '.mp3'
-        os.rename(out_file, new_file)
+        compress(base)
+        os.system(f"ffmpeg -y -i '{base}.mp4' -b:a 192K -vn '{base}.mp3'")
+	os.system(f"rm '{base}.mp4'")
         print(Fore.GREEN,"COMPLETE | {}".format(yt.title))
         print(Style.RESET_ALL,"\n")
 
