@@ -26,7 +26,8 @@ class Downloader:
         base, ext = os.path.splitext(out_file)
         compress(base)
         os.system(f"ffmpeg -y -i '{base}.mp4' -b:a 192K -vn '{base}.mp3'")
-	os.system(f"rm '{base}.mp4'")
+        os.system(f"rm '{base}.mp4'")
+        os.system(f"rm '{base}_C.mp4'")
         print(Fore.GREEN,"COMPLETE | {}".format(yt.title))
         print(Style.RESET_ALL,"\n")
 
