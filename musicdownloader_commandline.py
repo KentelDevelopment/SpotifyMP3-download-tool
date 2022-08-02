@@ -3,7 +3,7 @@ import os
 from spotipy.oauth2 import SpotifyClientCredentials
 from pprint import pprint
 from colorama import Fore, Back, Style
-
+from searchyt import Downloader
 
 theurl = input("? | Enter a Spotify playlist URL:")
 
@@ -15,8 +15,9 @@ except:
 	exit()
 client_id = "a0c932b9e34b4149b8f367c5e403313e"
 secretclient = "37335ef57fad4854825c67826b6a5816"
-os.system(f"export SPOTIPY_CLIENT_ID='{client_id}'")
-os.system(f"export SPOTIPY_CLIENT_SECRET='{secretclient}'")
+os.environ["SPOTIPY_CLIENT_ID"] =client_id
+os.environ["SPOTIPY_CLIENT_SECRET"] =secretclient
+
 
 
 sp = spotipy.Spotify(client_credentials_manager=SpotifyClientCredentials())
@@ -28,9 +29,10 @@ response = sp.playlist_items(pl_id,
                              fields='items.track,total')
    
 for r in response['items']:
-	print(Fore.CYAN,r['track']['name'])
-	print(Fore.RED,r['track']['artists'][0]['name'])
-	print(Style.RESET_ALL,"\n")
+	
+    Downloader.downloadvideo(str(r['track']['name'])+" "+str(r['track']['artists'][0]['name']))
+
+
 
 
 
