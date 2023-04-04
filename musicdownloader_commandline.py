@@ -4,7 +4,7 @@ from spotipy.oauth2 import SpotifyClientCredentials
 from pprint import pprint
 from colorama import Fore, Back, Style
 from searchyt import Downloader
-
+import time
 print(Fore.GREEN,"""
     888b     d888 8888888b.   .d8888b.  8888888888 Y88b   d88P
     8888b   d8888 888   Y88b d88P  Y88b 888         Y88b d88P
@@ -44,10 +44,16 @@ response = sp.playlist_items(pl_id,
                              fields='items.track,total')
    
 for r in response['items']:
-	
-    Downloader.downloadvideo(str(r['track']['name'])+" "+str(r['track']['artists'][0]['name']))
+    try:
+        Downloader.downloadvideo(str(r['track']['name'])+" "+str(r['track']['artists'][0]['name']),data=r['track'])
+    except Exception as e:
+        print(e)
+        time.sleep(10)
+        try:
+            Downloader.downloadvideo(str(r['track']['name'])+" "+str(r['track']['artists'][0]['name']),data=r["track"])
 
-
+        except:
+            continue
 
 
 
